@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import { getDoc, doc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -28,17 +29,22 @@ const handleLogin = async (e) => {
         // Check if the user has a valid role to log in
         if (userRole === role) {
           console.log('User logged in:', user);
+          toast.success('Login Successful');
           navigate('/');
+
         } else {
           console.log('User does not have a valid role to log in.');
+          toast.warning('Role Not Match');
           // Optionally, you can redirect to a different page or show an error message
         }
       } else {
         console.log('User document does not exist in Firestore.');
+        toast.warning('User is not registered with this email');
         // Handle the case where the user document does not exist
       }
     } catch (error) {
       console.error('Error logging in:', error.message);
+      toast.error('Something went wrong');
       navigate('/login');
     }
   };

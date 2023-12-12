@@ -6,6 +6,8 @@ import SignUp from './components/Authentication/Signup';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Home from './components/Pages/Home'
 import { auth } from './firebase';
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 function App() {
   const [user, loading] = useAuthState(auth);
   const [authChecked, setAuthChecked] = useState(false);
@@ -24,6 +26,9 @@ function App() {
   }
 
   return (
+    <>
+
+    <ToastContainer />
     <Routes>
         <Route
           path="/"
@@ -44,6 +49,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
+      </>
   );
 }
 

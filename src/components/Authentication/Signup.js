@@ -3,6 +3,7 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase';
 import { Link, useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
   const [username, setUsername] = useState('');
@@ -44,10 +45,12 @@ const Signup = () => {
           role,
         });
       }
+      toast.success('Registeration Successful! Please Login to continue');
   
       console.log('User signed up:', user);
     } catch (error) {
       console.error('Error signing up:', error.message);
+      toast.error('Something went wrong went registering your account');
       navigateToLogin('/signup');
     }
   

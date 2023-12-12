@@ -4,6 +4,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth, db } from '../../firebase';
 import { signOut } from 'firebase/auth';
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const [user] = useAuthState(auth);
@@ -28,6 +29,7 @@ const Home = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      toast.success('Logout Successful');
       // You can perform additional actions after logout if needed
     } catch (error) {
       console.error('Error logging out:', error.message);
