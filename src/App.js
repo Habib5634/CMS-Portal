@@ -1,24 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { Route, Routes, Navigate } from 'react-router-dom';
 
+import Login from './components/Authentication/Login';
+import SignUp from './components/Authentication/Signup';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import Home from './components/Pages/Home'
+import { auth } from './firebase';
 function App() {
+  const [user, loading] = useAuthState(auth);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setAuthChecked(true);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (!authChecked || loading) {
+    // Loading state while checking authentication status
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+        <Route
+          path="/"
+          element={
+            user ? (
+              <Home />
+            ) : (
+              <Navigate
+                replace
+                to="/login"
+                state={{
+                  from: '/',
+                }}
+              />
+            )
+          }
+        />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<SignUp />} />
+      </Routes>
   );
 }
 
