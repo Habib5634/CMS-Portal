@@ -2,20 +2,54 @@ import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../firebase';
 import { Link, useNavigate } from 'react-router-dom';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { AiFillEye, AiFillEyeInvisible, AiOutlineMail, AiOutlineLock,AiOutlineIdcard } from 'react-icons/ai';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
+import { CiUser } from "react-icons/ci";
+import TextInput from '../Inputs/TextInput';
+import { MdOutlinePhone, MdOutlineContactPhone  } from "react-icons/md";
+import { IoBookOutline } from "react-icons/io5";
+import { BsCalendar2Date } from "react-icons/bs";
 
+import { FaRegAddressBook } from "react-icons/fa";
+
+import DropdownInput from '../Inputs/DropdownInput';
+import Loading from '../Loading/Loading';
 const Signup = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
+ const currentDate= new Date().toISOString().split('T')[0] // Today's date
+  const currentYear= new Date().getFullYear()
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail ] = useState('')
+  const [course, setCourse] = useState('');
+  const [section,setSection] = useState('')
   const [password, setPassword] = useState('');
   const [phone,setPhone] = useState('')
-  const [city,setCity] = useState('')
-  const [address,setAddress] = useState('')
-  const [country,setCountry] = useState('')
+  const [cnic , setCnic] = useState('')
+  const [fatherName,setFatherName] = useState('')
+  const [fatherCnic, setFatherCnic]  = useState('')
+  const [fatherPhone, setFatherPhone] = useState('')
+  const [emergencyPhone,setEmergencyPhone] = useState('')
+
   const [role, setRole] = useState('student'); // Default role is student
- 
-  const [] = useState('')
+  const [isPasswordHidden, setPasswordHidden] = useState(true);
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [age, setAge] = useState('');
+ const [registrationDate,setRegistrationDate] = useState(currentDate)
+ const [registrationYear,setRegistrationYear] = useState(currentYear)
+ const [loading, setLoading] = useState(false);
+
+  const courseOptions = [
+    { value: 'Computer Science', label: 'Computer Science' },
+    { value: 'Software Engineering', label: 'Software Engineering' },
+    { value: 'Artificial Intelligence', label: 'Artificial Intelligence' },
+  ];
+  const sectionOptions = [
+    { value: 'A', label: 'Section A' },
+    { value: 'B', label: 'Section B' },
+    
+  ];
+  
   const navigate = useNavigate()
 
   const handleSignup = async (e) => {
@@ -24,7 +58,8 @@ const Signup = () => {
     let navigateToLogin;
   
     try {
-      console.log('Before navigation');
+      setLoading(true);
+      
       navigateToLogin = navigate;
   
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -37,11 +72,22 @@ const Signup = () => {
       if (!userDocSnapshot.exists()) {
         // If the user document doesn't exist, create it
         await setDoc(userDocRef, {
-          username,
+          firstName,
+          lastName,
+          email,
+          password,
+          course,
+          section,
           phone,
-          city,
-          address,
-          country,
+          cnic,
+          fatherName,
+          fatherCnic,
+          fatherPhone,
+          emergencyPhone,
+          dateOfBirth,
+          age,
+          registrationDate,
+          registrationYear,
           role,
         });
       }
@@ -52,6 +98,8 @@ const Signup = () => {
       console.error('Error signing up:', error.message);
       toast.error('Something went wrong went registering your account');
       navigateToLogin('/signup');
+    }finally {
+      setLoading(false);
     }
   
     if (navigateToLogin) {
@@ -59,29 +107,48 @@ const Signup = () => {
       console.log('After navigation');
     }
   };
+  const handleDateOfBirthChange = (e) => {
+    const selectedDate = e.target.value;
+    setDateOfBirth(selectedDate);
 
+    // Calculate age based on the selected date of birth
+    const birthDate = new Date(selectedDate);
+    const currentDate = new Date();
+    const calculatedAge = currentDate.getFullYear() - birthDate.getFullYear();
+    setAge(calculatedAge);
+  };
 
-  return (
-    <div className='bg-gradient-to-b from-emerald-500 to-blue-800 flex items-center justify-center min-h-screen pt-4 px-4 pb-10 text-center sm:block sm:p-0  h-screen w-full '>
-      <form onSubmit={handleSignup} className='inline-block p-4 align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full '>
-      <h2 className='text-center text-2xl font-bold mb-5 text-gradient-to-b from-emerald-500 to-blue-800'>Signup</h2>
+  return (<>
 
-      <div className='flex justify-center items-center mb-4'>
-          <label className='font-bold text-center w-1/3'>Role:</label>
+    {loading ? (<Loading/>) : (
+    <div className="relative h-screen flex justify-center items-center">
+    <div className="absolute  top-0 left-0 right-0 bottom-0 bg-cover bg-center  " style={{ backgroundImage: 'url("https://images.unsplash.com/uploads/1412026095116d2b0c90e/3bf33993?q=80&w=1767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}>
+    <div className="absolute top-0 left-0 right-0 bottom-0 bg-black overflow-y-auto bg-opacity-70  backdrop-blur-md flex justify-center items-center">
+      <div className='inline-block justify-center  p-8 align-bottom overflow-y-auto bg-green-950 bg-opacity-40 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full '>
+
+      <form onSubmit={handleSignup} className=''>
+      <h2 className=' text-3xl font-bold  pt-1 text-emerald-500 to-blue-800'>Signup</h2>
+      <p className='text-lg text-gray-300 mb-5'>Welcome to our CMS System</p>
+
+{/* Role */}
+      <div className=' flex w-full gap-4'>
+         
           <div className='flex items-center space-x-4'>
-            <label>
+            <label className='flex items-center text-emerald-500'>
               <input
                 type='radio'
                 value='student'
+                className='bg-emerald-500 mr-1'
                 checked={role === 'student'}
                 onChange={() => setRole('student')}
               />
               Student
             </label>
-            <label>
+            <label className='flex items-center text-emerald-500'>
               <input
                 type='radio'
                 value='teacher'
+                className='bg-emerald-500 mr-1'
                 checked={role === 'teacher'}
                 onChange={() => setRole('teacher')}
               />
@@ -89,112 +156,219 @@ const Signup = () => {
             </label>
           </div>
         </div>
-      <div className='flex justify-center items-center mb-4'>
 
-        <label className='font-bold   text-center    w-1/3   '>
-          Username:
-        </label>
-        <input 
-        type="text" 
-        placeholder='Enter Your User Name'
-        value={username} 
-        className='border pl-2 py-1 border-black w-2/3 rounded-md'
+        {/* First Name An Last Name */}
+        <div className='flex w-full gap-4'>
+        <TextInput
+        type="text"
+        divClass='w-1/2'
+      label="First Name"
+      id="firstName"
+      placeholder="John"
+      name="firstName"
+      value={firstName}
+      onChange={(e) => setFirstName(e.target.value)}
+      icon={CiUser} // Specify the icon you want to use
+    />
 
-        onChange={(e) => setUsername(e.target.value)} 
-        required />
+        <TextInput
+        type="text"
+        divClass='w-1/2'
+      label="Last Name"
+      id="lastName"
+      placeholder="Doe"
+      name="lastName"
+      value={lastName}
+      onChange={(e) => setLastName(e.target.value)}
+      icon={CiUser} // Specify the icon you want to use
+    />
+</div>
+
+{/* email and password */}
+      <div className='flex w-full gap-4'>
+      <TextInput
+        type="email"
+      label="Email"
+      divClass='w-1/2'
+      placeholder="John@gmail.com"
+      id="email"
+      name="email"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      icon={AiOutlineMail} // Specify the icon you want to use
+    />
+{/* passord */}
+<div className="flex w-1/2 flex-col">
+      <label className="text-emerald-500 font-medium">
+        Password<span className="text-red-500">*</span>
+      </label>
+      <div className="relative flex items-center mb-4  border border-gray-500">
+        <AiOutlineLock className="text-white p-0.5 w-8 h-8 bg-emerald-500"/>
+        <input
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          placeholder="John.1234"
+          type={isPasswordHidden ? 'password' : 'text'}
+          className="w-full p-1 ml-3 text-gray-500 outline-none bg-transparent"
+        />
+        <span
+          className="text-gray-500 absolute top-1 right-3 inset-y-0 my-auto active:text-gray-500 cursor-pointer"
+          onClick={() => setPasswordHidden(!isPasswordHidden)}
+        >
+          {isPasswordHidden ? (
+            <AiFillEyeInvisible className="w-6 h-6" />
+          ) : (
+            <AiFillEye className="w-6 h-6" />
+          )}
+        </span>
+      </div>
+    </div>
 
         </div>
-      <div className='flex justify-center items-center mb-4'>
-        <label className='font-bold   text-center    w-1/3   '>
-          Email:
-        </label>
-        <input 
-        type="email" 
-        placeholder='Enter Your Email Address'
-        value={email} 
-        className='border pl-2 py-1 border-black w-2/3 rounded-md'
-        onChange={(e) => setEmail(e.target.value)} 
-        required />
-        </div>
-      <div className='flex justify-center items-center mb-4'>
-       
-        <label className='font-bold   text-center    w-1/3   '>
-          Password:
-          
-        </label>
-        <input 
-          type="password"
-          placeholder='Enter Your Password'  
-          value={password} 
-        className='border pl-2 py-1 border-black w-2/3 rounded-md'
-          onChange={(e) => setPassword(e.target.value)} 
-          required />
-        </div>
 
-        <div className='flex justify-center items-center mb-4'>
-       
-       <label className='font-bold   text-center    w-1/3   '>
-         Phone:
-         
-       </label>
-       <input 
-         type="number"
-         placeholder='Enter Your Phone Number'  
-         value={phone} 
-       className='border pl-2 py-1 border-black w-2/3 rounded-md'
-         onChange={(e) => setPhone(e.target.value)} 
-         required />
+        {/* course and section */}
+      <div className='flex w-full gap-4'>
+      <DropdownInput
+  label="Select Course"
+  id="course"
+  divClass='w-1/2'
+  name="course"
+  value={course}
+  onChange={(e) => setCourse(e.target.value)}
+  options={courseOptions}
+  icon={IoBookOutline}
+/>
+
+<DropdownInput
+  label="Select Section"
+  id="section"
+  divClass='w-1/2'
+  name="section"
+  value={section}
+  onChange={(e) => setSection(e.target.value)}
+  options={sectionOptions}
+  icon={FaRegAddressBook }
+/>
+        </div>
+{/* contact and CNIC */}
+        <div className='flex w-full gap-4'>
+        <TextInput
+        type="number"
+      label="Phone Number"
+      divClass='w-1/2'
+      id="phone"
+      placeholder="+923-------"
+      name="phone"
+      value={phone}
+      onChange={(e) => setPhone(e.target.value)}
+      icon={MdOutlinePhone} // Specify the icon you want to use
+    />
+    <TextInput
+        type="number"
+      label="CNIC Number"
+      divClass='w-1/2'
+      placeholder="00000-0000000-0"
+      id="cnic"
+      name="cnic"
+      value={cnic}
+      onChange={(e) => setCnic(e.target.value)}
+      icon={AiOutlineIdcard} // Specify the icon you want to use
+    />
+      
        </div>
-       <div className='flex justify-center items-center mb-4'>
+       {/* father Name and Father CNIC */}
+       <div className='flex w-full gap-4'>
+       <TextInput
+        type="text"
+        divClass='w-1/2'
+      label="Father name"
+      id="fatherName"
+      placeholder="Richard Doe"
+      name="fatherName"
+      value={fatherName}
+      onChange={(e) => setFatherName(e.target.value)}
+      icon={AiOutlineIdcard} // Specify the icon you want to use
+    />
+    <TextInput
+        type="number"
+      label="Father CNIC"
+      divClass='w-1/2'
+      id="fatherCnic"
+      placeholder="00000-0000000-0"
+      name="fatherCnic"
+      value={fatherCnic}
+      onChange={(e) => setFatherCnic(e.target.value)}
+      icon={AiOutlineIdcard} // Specify the icon you want to use
+    />
        
-       <label className='font-bold   text-center    w-1/3   '>
-         City:
-         
-       </label>
-       <input 
-         type="text"
-         placeholder='Enter Your City'  
-         value={city} 
-       className='border pl-2 py-1 border-black w-2/3 rounded-md'
-         onChange={(e) => setCity(e.target.value)} 
-         required />
        </div>
-       <div className='flex justify-center items-center mb-4'>
+       <div className='flex w-full gap-4'>
+       <TextInput
+        type="number"
+        divClass='w-1/2'
+      label="Father Contact"
+      id="fatherPhone"
+      placeholder="+923---------"
+      name="fatherPhone"
+      value={fatherPhone}
+      onChange={(e) => setFatherPhone(e.target.value)}
+      icon={MdOutlineContactPhone} // Specify the icon you want to use
+    />
+     <TextInput
+        type="number"
+      label="Emergency Contact"
+      id="emergencyPhone"
+      divClass='w-1/2'
+      placeholder="+923---------"
+      name="emergencyPhone"
+      value={emergencyPhone}
+      onChange={(e) => setEmergencyPhone(e.target.value)}
+      icon={MdOutlinePhone} // Specify the icon you want to use
+    />
        
-       <label className='font-bold   text-center    w-1/3   '>
-         Address:
-         
-       </label>
-       <input 
-         type="text"
-         placeholder='Enter Your Address'  
-         value={address} 
-       className='border pl-2 py-1 border-black w-2/3 rounded-md'
-         onChange={(e) => setAddress(e.target.value)} 
-         required />
        </div>
-       <div className='flex justify-center items-center mb-4'>
+       {/* date of birth and Age */}
+       <div className='flex w-full gap-4'>
+       <TextInput
+        type="date"
+        placeholder="08/17/1999"
+      label="Date Of Birth"
+      divClass='w-1/2'
+      id="dateOfBirth"
+      name="dateOfBirth"
+      value={dateOfBirth}
+      onChange={handleDateOfBirthChange}
+      icon={BsCalendar2Date } // Specify the icon you want to use
+    />
        
-       <label className='font-bold   text-center    w-1/3   '>
-         Country:
-         
-       </label>
-       <input 
-         type="text"
-         placeholder='Enter Your Country'  
-         value={country} 
-       className='border pl-2 py-1 border-black w-2/3 rounded-md'
-         onChange={(e) => setCountry(e.target.value)} 
-         required />
+       <TextInput
+        type="text"
+      label="Age"
+      id="age"
+      divClass='w-1/2'
+      name="age"
+      value={age}
+      readOnly
+      icon={MdOutlinePhone} // Specify the icon you want to use
+    />
+       
        </div>
 
         
-        <div className='flex justify-center mt-4 gap-4 '>
-                    <button className='bg-gradient-to-b from-emerald-500 to-blue-800 rounded-full text-white font-bold px-6 flex justify-center py-2' type="submit">Sign Up</button>
-                    <button className='flex items-center'>Already Registered! <Link to='/login'><span className='text-blue-500 ml-1'>Login</span></Link></button>
+        <div className='flex flex-col justify-center mt-4 gap-4 '>
+                    <button  disabled={loading} className='bg-emerald-500   text-white font-bold px-6 flex justify-center py-2' type="submit">
+                    {loading ? " Please Wait..." : 'Signup'}
+                      </button>
+                    <p className='flex items-center text-gray-300'>Already Registered! <Link to='/login'><span className='text-emerald-500 ml-1'>Login</span></Link></p>
                     </div>
       </form>
     </div>
+    </div>
+    </div>
+    </div>
+    )}
+</>
   );
 };
 
