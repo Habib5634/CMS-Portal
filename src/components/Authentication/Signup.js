@@ -121,12 +121,12 @@ const Signup = () => {
   return (<>
 
     {loading ? (<Loading/>) : (
-    <div className="relative h-screen flex justify-center items-center">
-    <div className="absolute  top-0 left-0 right-0 bottom-0 bg-cover bg-center  " style={{ backgroundImage: 'url("https://images.unsplash.com/uploads/1412026095116d2b0c90e/3bf33993?q=80&w=1767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}>
-    <div className="absolute top-0 left-0 right-0 bottom-0 bg-black overflow-y-auto bg-opacity-70  backdrop-blur-md flex justify-center items-center">
-      <div className='inline-block justify-center  p-8 align-bottom overflow-y-auto bg-green-950 bg-opacity-40 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full '>
+    <div className=" flex justify-center items-center">
+    <div className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center  " style={{ backgroundImage: 'url("https://images.unsplash.com/uploads/1412026095116d2b0c90e/3bf33993?q=80&w=1767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}>
+    <div className="  p-2 bg-black  bg-opacity-70  backdrop-blur-md flex justify-center items-center">
+      <div className='inline-block justify-center  p-8  overflow-y-auto bg-green-950 bg-opacity-40 rounded-lg text-left  shadow-xl transform transition-all sm:my-8   sm:w-2xl'>
 
-      <form onSubmit={handleSignup} className=''>
+      <form onSubmit={handleSignup} >
       <h2 className=' text-3xl font-bold  pt-1 text-emerald-500 to-blue-800'>Signup</h2>
       <p className='text-lg text-gray-300 mb-5'>Welcome to our CMS System</p>
 
@@ -138,7 +138,7 @@ const Signup = () => {
               <input
                 type='radio'
                 value='student'
-                className='bg-emerald-500 mr-1'
+                className='bg-emerald-500 mr-1 text-emerald-500'
                 checked={role === 'student'}
                 onChange={() => setRole('student')}
               />
@@ -158,10 +158,10 @@ const Signup = () => {
         </div>
 
         {/* First Name An Last Name */}
-        <div className='flex w-full gap-4'>
+        <div className='flex flex-col md:flex-row gap-4'>
         <TextInput
         type="text"
-        divClass='w-1/2'
+        divClass='w-full md:w-1/2'
       label="First Name"
       id="firstName"
       placeholder="John"
@@ -173,7 +173,7 @@ const Signup = () => {
 
         <TextInput
         type="text"
-        divClass='w-1/2'
+        divClass='w-full md:w-1/2'
       label="Last Name"
       id="lastName"
       placeholder="Doe"
@@ -185,11 +185,11 @@ const Signup = () => {
 </div>
 
 {/* email and password */}
-      <div className='flex w-full gap-4'>
+<div className='flex flex-col md:flex-row gap-4'>
       <TextInput
         type="email"
       label="Email"
-      divClass='w-1/2'
+      divClass='w-full md:w-1/2'
       placeholder="John@gmail.com"
       id="email"
       name="email"
@@ -198,7 +198,7 @@ const Signup = () => {
       icon={AiOutlineMail} // Specify the icon you want to use
     />
 {/* passord */}
-<div className="flex w-1/2 flex-col">
+<div className="flex w-full  md:w-1/2 flex-col">
       <label className="text-emerald-500 font-medium">
         Password<span className="text-red-500">*</span>
       </label>
@@ -210,7 +210,7 @@ const Signup = () => {
           name="password"
           placeholder="John.1234"
           type={isPasswordHidden ? 'password' : 'text'}
-          className="w-full p-1 ml-3 text-gray-500 outline-none bg-transparent"
+          className="w-full p-1 ml-3 text-emerald-500 outline-none bg-transparent"
         />
         <span
           className="text-gray-500 absolute top-1 right-3 inset-y-0 my-auto active:text-gray-500 cursor-pointer"
@@ -228,11 +228,11 @@ const Signup = () => {
         </div>
 
         {/* course and section */}
-      <div className='flex w-full gap-4'>
+        <div className='flex flex-col md:flex-row gap-4'>
       <DropdownInput
   label="Select Course"
   id="course"
-  divClass='w-1/2'
+  divClass='w-full md:w-1/2'
   name="course"
   value={course}
   onChange={(e) => setCourse(e.target.value)}
@@ -243,7 +243,7 @@ const Signup = () => {
 <DropdownInput
   label="Select Section"
   id="section"
-  divClass='w-1/2'
+  divClass='w-full md:w-1/2'
   name="section"
   value={section}
   onChange={(e) => setSection(e.target.value)}
@@ -252,11 +252,11 @@ const Signup = () => {
 />
         </div>
 {/* contact and CNIC */}
-        <div className='flex w-full gap-4'>
+<div className='flex flex-col md:flex-row gap-4'>
         <TextInput
         type="number"
       label="Phone Number"
-      divClass='w-1/2'
+      divClass='w-full md:w-1/2'
       id="phone"
       placeholder="+923-------"
       name="phone"
@@ -267,7 +267,7 @@ const Signup = () => {
     <TextInput
         type="number"
       label="CNIC Number"
-      divClass='w-1/2'
+      divClass='w-full md:w-1/2'
       placeholder="00000-0000000-0"
       id="cnic"
       name="cnic"
@@ -278,10 +278,10 @@ const Signup = () => {
       
        </div>
        {/* father Name and Father CNIC */}
-       <div className='flex w-full gap-4'>
+       <div className='flex flex-col md:flex-row gap-4'>
        <TextInput
         type="text"
-        divClass='w-1/2'
+        divClass='w-full md:w-1/2'
       label="Father name"
       id="fatherName"
       placeholder="Richard Doe"
@@ -293,7 +293,7 @@ const Signup = () => {
     <TextInput
         type="number"
       label="Father CNIC"
-      divClass='w-1/2'
+      divClass='w-full md:w-1/2'
       id="fatherCnic"
       placeholder="00000-0000000-0"
       name="fatherCnic"
@@ -303,10 +303,10 @@ const Signup = () => {
     />
        
        </div>
-       <div className='flex w-full gap-4'>
+       <div className='flex flex-col md:flex-row gap-4'>
        <TextInput
         type="number"
-        divClass='w-1/2'
+        divClass='w-full md:w-1/2'
       label="Father Contact"
       id="fatherPhone"
       placeholder="+923---------"
@@ -319,7 +319,7 @@ const Signup = () => {
         type="number"
       label="Emergency Contact"
       id="emergencyPhone"
-      divClass='w-1/2'
+      divClass='w-full md:w-1/2'
       placeholder="+923---------"
       name="emergencyPhone"
       value={emergencyPhone}
@@ -329,12 +329,12 @@ const Signup = () => {
        
        </div>
        {/* date of birth and Age */}
-       <div className='flex w-full gap-4'>
+       <div className='flex flex-col md:flex-row gap-4'>
        <TextInput
         type="date"
         placeholder="08/17/1999"
       label="Date Of Birth"
-      divClass='w-1/2'
+      divClass='w-full md:w-1/2'
       id="dateOfBirth"
       name="dateOfBirth"
       value={dateOfBirth}
@@ -346,7 +346,7 @@ const Signup = () => {
         type="text"
       label="Age"
       id="age"
-      divClass='w-1/2'
+      divClass='w-full md:w-1/2'
       name="age"
       value={age}
       readOnly

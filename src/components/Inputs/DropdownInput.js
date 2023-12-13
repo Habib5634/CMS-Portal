@@ -1,8 +1,8 @@
 import React from 'react';
 
-const DropdownInput = ({ label, id, name, value, onChange, options, icon: Icon, className }) => {
+const DropdownInput = ({ label, id, name, value, onChange, options, icon: Icon, className,divClass }) => {
   return (
-    <div className='flex w-1/2 flex-col  '>
+    <div className={`  ${divClass} flex  flex-col  `}>
       <label className="text-emerald-500 font-medium">
         {label}<span className='text-red-500'>*</span>
       </label>
@@ -16,7 +16,7 @@ const DropdownInput = ({ label, id, name, value, onChange, options, icon: Icon, 
           className={`w-full p-1  text-emerald-500 outline-none bg-transparent ${className}`}
         >
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.value} className='bg-transparent' value={option.value}>
               {option.label}
             </option>
           ))}

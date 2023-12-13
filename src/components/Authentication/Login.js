@@ -120,7 +120,7 @@ const handleLogin = async (e) => {
           name="password"
           placeholder="John.1234"
           type={isPasswordHidden ? 'password' : 'text'}
-          className="w-full p-1 ml-3 text-gray-500 outline-none bg-transparent"
+          className="w-full p-1 ml-3 text-emerald-500 outline-none bg-transparent"
         />
         <span
           className="text-gray-500 absolute top-1 right-3 inset-y-0 my-auto active:text-gray-500 cursor-pointer"
