@@ -4,10 +4,13 @@ import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from './components/Authentication/Login';
 import SignUp from './components/Authentication/Signup';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import Home from './components/Pages/Home'
+import TeacherHome from './components/Pages/TeacherHome'
 import { auth } from './firebase';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Loading from './components/Loading/Loading';
+import StudentHome from './components/Pages/StudentHome';
+import QuizPage from './components/Pages/QuizPage.js/QuizPage';
 function App() {
   const [user, loading] = useAuthState(auth);
   const [authChecked, setAuthChecked] = useState(false);
@@ -22,7 +25,7 @@ function App() {
 
   if (!authChecked || loading) {
     // Loading state while checking authentication status
-    return <div>Loading...</div>;
+    return <Loading/>;
   }
 
   return (
@@ -31,16 +34,48 @@ function App() {
     <ToastContainer />
     <Routes>
         <Route
-          path="/"
+          path="/teacher"
           element={
             user ? (
-              <Home />
+              <TeacherHome />
             ) : (
               <Navigate
                 replace
                 to="/login"
                 state={{
-                  from: '/',
+                  from: '/teacher',
+                }}
+              />
+            )
+          }
+        />
+         <Route
+          path="/student"
+          element={
+            user ? (
+              <StudentHome />
+            ) : (
+              <Navigate
+                replace
+                to="/login"
+                state={{
+                  from: '/student',
+                }}
+              />
+            )
+          }
+        />
+        <Route
+          path="/student/courses/:id"
+          element={
+            user ? (
+              <QuizPage/>
+            ) : (
+              <Navigate
+                replace
+                to="/login"
+                state={{
+                  from: '/student/courses',
                 }}
               />
             )

@@ -8,9 +8,9 @@ import { toast } from 'react-toastify';
 import { CiUser } from "react-icons/ci";
 import TextInput from '../Inputs/TextInput';
 import { MdOutlinePhone, MdOutlineContactPhone  } from "react-icons/md";
-import { IoBookOutline } from "react-icons/io5";
+import { IoBookOutline,IoSchoolOutline } from "react-icons/io5";
 import { BsCalendar2Date } from "react-icons/bs";
-
+import { FaBookBible } from "react-icons/fa6";
 import { FaRegAddressBook } from "react-icons/fa";
 
 import DropdownInput from '../Inputs/DropdownInput';
@@ -30,7 +30,6 @@ const Signup = () => {
   const [fatherCnic, setFatherCnic]  = useState('')
   const [fatherPhone, setFatherPhone] = useState('')
   const [emergencyPhone,setEmergencyPhone] = useState('')
-
   const [role, setRole] = useState('student'); // Default role is student
   const [isPasswordHidden, setPasswordHidden] = useState(true);
   const [dateOfBirth, setDateOfBirth] = useState('');
@@ -38,6 +37,27 @@ const Signup = () => {
  const [registrationDate,setRegistrationDate] = useState(currentDate)
  const [registrationYear,setRegistrationYear] = useState(currentYear)
  const [loading, setLoading] = useState(false);
+ const [qualification, setQualification] = useState('')
+ const [otherQualifications, setOtherQualifications] = useState([]);
+ const [newQualification, setNewQualification] = useState('');
+const [courseAllowed,setCourseAllowed] = useState('')
+ const handleInputChange = (e) => {
+   setNewQualification(e.target.value);
+ };
+
+ const addQualification = () => {
+   if (newQualification.trim() !== '') {
+     setOtherQualifications((prevQualifications) => [...prevQualifications, newQualification]);
+     setNewQualification('');
+   }
+ };
+
+ const removeQualification = (index) => {
+   setOtherQualifications((prevQualifications) => [
+     ...prevQualifications.slice(0, index),
+     ...prevQualifications.slice(index + 1),
+   ]);
+ };
 
   const courseOptions = [
     { value: 'Computer Science', label: 'Computer Science' },
@@ -88,6 +108,9 @@ const Signup = () => {
           age,
           registrationDate,
           registrationYear,
+          qualification,
+          otherQualifications,
+          courseAllowed,
           role,
         });
       }
@@ -123,8 +146,8 @@ const Signup = () => {
     {loading ? (<Loading/>) : (
     <div className=" flex justify-center items-center">
     <div className="absolute top-0 left-0 right-0 bottom-0 bg-cover bg-center  " style={{ backgroundImage: 'url("https://images.unsplash.com/uploads/1412026095116d2b0c90e/3bf33993?q=80&w=1767&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")' }}>
-    <div className="  p-2 bg-black  bg-opacity-70  backdrop-blur-md flex justify-center items-center">
-      <div className='inline-block justify-center  p-8  overflow-y-auto bg-green-950 bg-opacity-40 rounded-lg text-left  shadow-xl transform transition-all sm:my-8   sm:w-2xl'>
+    <div className="  p-2 bg-black  bg-opacity-70 backdrop-blur-md flex justify-center items-center">
+      <div className='inline-block justify-center  p-8   overflow-y-auto bg-green-950 bg-opacity-40 rounded-lg text-left  shadow-xl transform transition-all sm:my-8   sm:w-2xl'>
 
       <form onSubmit={handleSignup} >
       <h2 className=' text-3xl font-bold  pt-1 text-emerald-500 to-blue-800'>Signup</h2>
@@ -153,6 +176,16 @@ const Signup = () => {
                 onChange={() => setRole('teacher')}
               />
               Teacher
+            </label>
+            <label className='flex items-center text-emerald-500'>
+              <input
+                type='radio'
+                value='assistant'
+                className='bg-emerald-500 mr-1'
+                checked={role === 'assistant'}
+                onChange={() => setRole('assistant')}
+              />
+              Assistant Trainer
             </label>
           </div>
         </div>
@@ -227,31 +260,7 @@ const Signup = () => {
 
         </div>
 
-        {/* course and section */}
-        <div className='flex flex-col md:flex-row gap-4'>
-      <DropdownInput
-  label="Select Course"
-  id="course"
-  divClass='w-full md:w-1/2'
-  name="course"
-  value={course}
-  onChange={(e) => setCourse(e.target.value)}
-  options={courseOptions}
-  icon={IoBookOutline}
-/>
-
-<DropdownInput
-  label="Select Section"
-  id="section"
-  divClass='w-full md:w-1/2'
-  name="section"
-  value={section}
-  onChange={(e) => setSection(e.target.value)}
-  options={sectionOptions}
-  icon={FaRegAddressBook }
-/>
-        </div>
-{/* contact and CNIC */}
+        {/* contact and CNIC */}
 <div className='flex flex-col md:flex-row gap-4'>
         <TextInput
         type="number"
@@ -277,8 +286,116 @@ const Signup = () => {
     />
       
        </div>
-       {/* father Name and Father CNIC */}
-       <div className='flex flex-col md:flex-row gap-4'>
+
+        {/* course and section */}
+{(role=== "student") ? ( 
+  
+  <div className='flex flex-col md:flex-row gap-4'>
+      <DropdownInput
+  label="Select Course"
+  id="course"
+  divClass='w-full md:w-1/2'
+  name="course"
+  value={course}
+  onChange={(e) => setCourse(e.target.value)}
+  options={courseOptions}
+  icon={IoBookOutline}
+/>
+
+<DropdownInput
+  label="Select Section"
+  id="section"
+  divClass='w-full md:w-1/2'
+  name="section"
+  value={section}
+  onChange={(e) => setSection(e.target.value)}
+  options={sectionOptions}
+  icon={FaRegAddressBook }
+/>
+        </div>
+): (
+  // Qualification and Other Qualification
+  <div className='flex flex-col md:flex-row gap-4'>
+      <TextInput
+  label="Qualification"
+  id="qualification"
+  placeholder='Qualification'
+  divClass='w-full md:w-1/2'
+  name="qualification"
+  value={qualification}
+  onChange={(e) => setQualification(e.target.value)}
+  // options={courseOptions}
+  icon={IoSchoolOutline}
+/>
+
+      <TextInput
+  label="Course Allowed"
+  id="courseAllowed"
+  divClass='w-full md:w-1/2'
+  name="courseAllowed"
+  value={courseAllowed}
+  type="number"
+  placeholder='Cources'
+  onChange={(e) => {
+    // Check if the entered value is between 0 and 5 (inclusive)
+    const newValue = parseInt(e.target.value, 10);
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 5) {
+      setCourseAllowed(newValue);
+    }
+  }}
+  icon={FaBookBible}
+/>
+
+
+        </div>
+)}
+{(role=== "teacher" || role=== "assistant")&& (
+  <div className="flex flex-col">
+  <label className="text-emerald-500 font-medium">
+    Other Qualifications<span className='text-red-500'>*</span>
+  </label>
+  <div className="flex items-center border mb-2 border-gray-500">
+    <input
+      value={newQualification}
+      onChange={handleInputChange}
+      placeholder="Add a qualification"
+      className="w-full p-1 ml-3 text-emerald-500 outline-none bg-transparent"
+    />
+    <button
+      type="button"
+      onClick={addQualification}
+      className="ml-2 bg-emerald-500 w-fit text-white p-1"
+    >
+      AddQualification
+    </button>
+  </div>
+
+  {otherQualifications.length > 0 && (
+    <div>
+      <h2 className="text-emerald-500 font-medium">List of Other Qualifications:</h2>
+      <ul>
+        {otherQualifications.map((qualification, index) => (
+          <li key={index} className="flex justify-between items-center mb-2">
+            <span className='text-gray-500'>{qualification}</span>
+            <button
+              type="button"
+              onClick={() => removeQualification(index)}
+              className="text-red-500 ml-2"
+            >
+              Remove
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+)}
+        
+{(role=== "student")&& (
+  <>
+   {/* father Name and Father CNIC */}
+   <div className='flex flex-col md:flex-row gap-4'>
        <TextInput
         type="text"
         divClass='w-full md:w-1/2'
@@ -354,6 +471,11 @@ const Signup = () => {
     />
        
        </div>
+  
+  
+  </>
+)}
+      
 
         
         <div className='flex flex-col justify-center mt-4 gap-4 '>

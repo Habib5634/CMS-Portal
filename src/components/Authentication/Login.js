@@ -16,45 +16,47 @@ const Login = () => {
   const [isPasswordHidden, setPasswordHidden] = useState(true);
 const navigate = useNavigate()
 const handleLogin = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    try {
-      setLoading(true);
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  try {
+    setLoading(true);
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      // Retrieve the user's role from Firestore
-      const userDocRef = doc(db, 'users', user.uid);
-      const userDocSnapshot = await getDoc(userDocRef);
+    // Retrieve the user's role from Firestore
+    const userDocRef = doc(db, 'users', user.uid);
+    const userDocSnapshot = await getDoc(userDocRef);
 
-      if (userDocSnapshot.exists()) {
-        const userData = userDocSnapshot.data();
-        const userRole = userData.role.toLowerCase(); // Normalize role to lowercase for comparison
+    if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data();
+      const userRole = userData.role.toLowerCase(); // Normalize role to lowercase for comparison
 
-        // Check if the user has a valid role to log in
-        if (userRole === role) {
-          console.log('User logged in:', user);
-          toast.success('Login Successful');
-          navigate('/');
+      // Check if the user has a valid role to log in
+      if (userRole === role) {
+        console.log('User logged in:', user);
+        toast.success('Login Successful');
 
-        } else {
-          console.log('User does not have a valid role to log in.');
-          toast.warning('Role Not Match');
-          // Optionally, you can redirect to a different page or show an error message
-        }
+        // Update the destination path based on the user's role
+        const destinationPath = userRole === 'student' ? '/student' : '/teacher';
+        navigate(destinationPath);
       } else {
-        console.log('User document does not exist in Firestore.');
-        toast.warning('User is not registered with this email');
-        // Handle the case where the user document does not exist
+        console.log('User does not have a valid role to log in.');
+        toast.warning('Role Not Match');
+        // Optionally, you can redirect to a different page or show an error message
       }
-    } catch (error) {
-      console.error('Error logging in:', error.message);
-      toast.error('Something went wrong');
-      navigate('/login');
-    }finally {
-      setLoading(false);
+    } else {
+      console.log('User document does not exist in Firestore.');
+      toast.warning('User is not registered with this email');
+      // Handle the case where the user document does not exist
     }
-  };
+  } catch (error) {
+    console.error('Error logging in:', error.message);
+    toast.error('Something went wrong');
+    navigate('/login');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <>
